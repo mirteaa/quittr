@@ -232,6 +232,28 @@
                 likeBtn.textContent = `♥ ${count}`;
             });
 
+            // retweet button to the right
+            const retweetBtn = document.createElement('button');
+            retweetBtn.className = 'retweet-btn';
+            retweetBtn.textContent = '🔁 0';
+            retweetBtn.style.position = 'absolute';
+            retweetBtn.style.bottom = '10px';
+            retweetBtn.style.right = '70px';
+            retweetBtn.style.background = 'rgba(255,255,255,0.8)';
+            retweetBtn.style.border = 'none';
+            retweetBtn.style.borderRadius = '12px';
+            retweetBtn.style.padding = '5px 10px';
+            retweetBtn.style.cursor = 'pointer';
+            retweetBtn.dataset.count = 0;
+
+            retweetBtn.addEventListener('click', () => {
+                let cnt = parseInt(retweetBtn.dataset.count, 10);
+                cnt += 1;
+                retweetBtn.dataset.count = cnt;
+                retweetBtn.textContent = `🔁 ${cnt}`;
+            });
+
+            box.appendChild(retweetBtn);
             box.appendChild(likeBtn);
             return box;
         }
