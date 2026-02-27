@@ -73,6 +73,7 @@
             transform: translateY(20px);
             animation: fadeIn 0.4s ease-out forwards;
             position: relative; /* for placing like button */
+            cursor: pointer; /* boxes are clickable */
         }
 
         @keyframes fadeIn {
@@ -86,6 +87,58 @@
         #sentinel {
             height: 20px;
             width: 100%;
+        }
+
+        /* overlay for color replies */
+        #replyOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column; /* ensure header sits above replies */
+            z-index: 2000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #replyOverlay .replies {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(50px,1fr));
+            gap: 10px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        #replyOverlay .reply-box {
+            width: 100%;
+            padding-top: 100%; /* square */
+            border-radius: 8px;
+            position: relative;
+        }
+
+        #replyOverlay .reply-box::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 8px;
+        }
+
+        #replyOverlay .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -178,6 +231,15 @@
     
     <div id="sentinel"></div>
 
+    <!-- overlay for color replies -->
+    <div id="replyOverlay">
+        <button class="close-btn" id="overlayClose">×</button>
+        <div class="overlay-header" style="color:#fff; margin-bottom:10px; font-size:1.2rem;">
+            Color Replies:
+        </div>
+        <div class="replies" id="repliesContainer"></div>
+    </div>
+
     <script>
         const feedContainer = document.getElementById('feed');
         const sentinel = document.getElementById('sentinel');
@@ -210,6 +272,11 @@
             const box = document.createElement('div');
             box.className = 'box';
             box.style.backgroundColor = getRandomColor();
+
+            // clicking the box should open overlay with random replies
+            box.addEventListener('click', () => {
+                showReplies();
+            });
 
             // add like button inside each box
             const likeBtn = document.createElement('button');
@@ -287,6 +354,40 @@
 
         // Tell the observer to watch the sentinel
         observer.observe(sentinel);
+
+        // overlay logic
+        const overlay = document.getElementById('replyOverlay');
+        const repliesContainer = document.getElementById('repliesContainer');
+        const overlayClose = document.getElementById('overlayClose');
+
+        function showReplies() {
+            // clear existing content
+            repliesContainer.innerHTML = '';
+            // random number of replies between 1 and 10
+            const count = Math.floor(Math.random() * 10) + 1;
+            for (let i = 0; i < count; i++) {
+                const r = document.createElement('div');
+                r.className = 'reply-box';
+                const color = getRandomColor();
+                r.style.setProperty('--bg', color);
+                r.querySelector?.('::after');
+                // set background via pseudo-element style hack
+                r.style.backgroundColor = color;
+                repliesContainer.appendChild(r);
+            }
+            overlay.style.display = 'flex';
+        }
+
+        overlayClose.addEventListener('click', () => {
+            overlay.style.display = 'none';
+        });
+
+        // hide when clicking outside replies area
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
