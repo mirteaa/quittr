@@ -140,6 +140,22 @@
             font-size: 1.2rem;
             cursor: pointer;
         }
+
+        /* floating support button */
+        #supportBtn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #ff4081;
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1500;
+        }
     </style>
 </head>
 <body>
@@ -239,6 +255,9 @@
         </div>
         <div class="replies" id="repliesContainer"></div>
     </div>
+
+    <!-- floating support me button -->
+    <button id="supportBtn">Support Me</button>
 
     <script>
         const feedContainer = document.getElementById('feed');
@@ -359,6 +378,13 @@
         const overlay = document.getElementById('replyOverlay');
         const repliesContainer = document.getElementById('repliesContainer');
         const overlayClose = document.getElementById('overlayClose');
+
+        // support button behavior
+        const supportBtn = document.getElementById('supportBtn');
+        supportBtn.addEventListener('click', () => {
+            // open a placeholder support link in a new tab
+            window.open('https://www.paypal.com/paypalme/mirteaa', '_blank');
+        });
 
         function showReplies() {
             // clear existing content
