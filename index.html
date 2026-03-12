@@ -30,7 +30,13 @@
             gap: 20px;
             padding: 20px;
             width: 100%;
-            max-width: 600px; /* Keeps it looking like a social media feed */
+            max-width: 90vw;
+        }
+
+        @media (min-width: 768px) {
+            #feed {
+                max-width: 600px;
+            }
         }
 
         /* top menu bar */
@@ -56,24 +62,392 @@
         .top-bar .toggle-container {
             position: absolute;
             left: 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .toggle-container button {
+    background: transparent;
+    border: none !important;
         }
 
         .top-bar .icon {
             font-size: 2rem;
         }
 
-        /* The colored boxes */
-        .box {
+        /* Post cards - flip card style */
+        .post-card {
             width: 100%;
-            height: 250px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            /* A subtle pop-in animation when they load */
+            aspect-ratio: 16 / 9;
+            min-height: 70px;
+            border-radius: 12px;
+            cursor: pointer;
             opacity: 0;
-            transform: translateY(20px);
             animation: fadeIn 0.4s ease-out forwards;
-            position: relative; /* for placing like button */
-            cursor: pointer; /* boxes are clickable */
+            position: relative;
+            perspective: 1000px;
+        }
+
+        @media (max-width: 480px) {
+            .post-card {
+                aspect-ratio: 4 / 3;
+                min-height: 60px;
+            }
+        }
+
+        .post-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-style: preserve-3d;
+        }
+
+        .post-card.flipped .post-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .post-card-front, .post-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .post-card-front {
+            background: linear-gradient(135deg, var(--card-color-1), var(--card-color-2));
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .post-card:hover:not(.clicked) .post-card-front {
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .post-card-back {
+            background: rgba(100,100,100,0.6);
+            border: 2px solid rgba(255,255,255,0.2);
+            transform: rotateY(180deg);
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 1rem;
+            line-height: 1.5;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .post-card.light .post-card-back {
+            color: rgba(0,0,0,0.8);
+            background: rgba(180,180,180,0.4);
+        }
+
+        .artifact-notification {
+            font-size: 2rem;
+            animation: artifactWiggle 0.6s ease-in-out;
+        }
+
+        @keyframes artifactWiggle {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg) scale(1.1); }
+            50% { transform: rotate(5deg) scale(1.1); }
+            75% { transform: rotate(-5deg) scale(1.1); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+
+        .artifact-rarity-text {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .post-card.clicked {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .post-card.kitten-found .post-card-front {
+            animation: kittenPulse 0.6s ease-out;
+        }
+
+        @keyframes kittenPulse {
+            0% { transform: scale(0.95); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .response-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .response-modal.active {
+            display: flex;
+        }
+
+        .response-content {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 500px;
+            text-align: center;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .response-modal.light .response-content {
+            background: #f5f5f5;
+            color: #000;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .response-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+
+        .artifact-found {
+            font-size: 2rem;
+            margin: 15px 0;
+        }
+
+        .rarity-label {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .response-modal.light .rarity-label {
+            color: rgba(0,0,0,0.5);
+        }
+
+        .kitten-celebration {
+            font-size: 1.5rem;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+            margin: 20px 0;
+        }
+
+        .modal-close {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .response-modal.light .modal-close {
+            background: rgba(0,0,0,0.1);
+            border-color: rgba(0,0,0,0.2);
+            color: #000;
+        }
+
+        .response-modal.light .modal-close:hover {
+            background: rgba(0,0,0,0.15);
+        }
+
+        /* Collection button in top bar */
+        #collectionBtn {
+            position: absolute;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #collectionBtn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        body.light #collectionBtn {
+            border-color: rgba(0,0,0,0.2);
+        }
+
+        body.light #collectionBtn:hover {
+            background: rgba(0,0,0,0.05);
+        }
+
+        /* Collection modal */
+        .collection-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2100;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .collection-modal.active {
+            display: flex;
+        }
+
+        .collection-content {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        body.light .collection-content {
+            background: #f5f5f5;
+            color: #000;
+        }
+
+        .collection-title {
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .artifact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        body.light .artifact-item {
+            background: rgba(0,0,0,0.05);
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .artifact-emoji {
+            font-size: 2rem;
+        }
+
+        .artifact-name {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            text-transform: capitalize;
+        }
+
+        .artifact-count {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: rgba(255,255,255,0.8);
+        }
+
+        body.light .artifact-count {
+            color: rgba(0,0,0,0.7);
+        }
+
+        .artifact-rarity-badge {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+            margin-top: 3px;
+        }
+
+        .kitten-count-modal {
+            text-align: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+
+        body.light .kitten-count-modal {
+            border-top-color: rgba(0,0,0,0.1);
+        }
+
+        .modal-close-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        body.light .modal-close-btn {
+            background: rgba(0,0,0,0.1);
+            border-color: rgba(0,0,0,0.2);
+            color: #000;
+        }
+
+        body.light .modal-close-btn:hover {
+            background: rgba(0,0,0,0.15);
         }
 
         @keyframes fadeIn {
@@ -89,64 +463,12 @@
             width: 100%;
         }
 
-        /* overlay for color replies */
-        #replyOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0,0,0,0.75);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column; /* ensure header sits above replies */
-            z-index: 2000;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        #replyOverlay .replies {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(50px,1fr));
-            gap: 10px;
-            max-width: 600px;
-            width: 100%;
-        }
-
-        #replyOverlay .reply-box {
-            width: 100%;
-            padding-top: 100%; /* square */
-            border-radius: 8px;
-            position: relative;
-        }
-
-        #replyOverlay .reply-box::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 8px;
-        }
-
-        #replyOverlay .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
         /* floating support button */
         #supportBtn {
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: #ff4081;
+            background: linear-gradient(135deg, #ff4081, #ff6497);
             color: #fff;
             border: none;
             border-radius: 24px;
@@ -155,6 +477,32 @@
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             z-index: 1500;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        @media (max-width: 480px) {
+            #supportBtn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+                bottom: 15px;
+                left: 15px;
+            }
+        }
+
+        /* Flag gradient post cards */
+        .post-card-front.trans-flag {
+            background: linear-gradient(135deg, #5bcefa 0%, #f5a9d0 25%, #ffffff 50%, #f5a9d0 75%, #5bcefa 100%) !important;
+        }
+
+        .post-card-front.rainbow-flag {
+            background: linear-gradient(25deg, 
+                #ff9999 0%, 
+                #ffcc99 16.67%, 
+                #ffff99 33.33%, 
+                #99ff99 50%, 
+                #99ccff 66.67%, 
+                #cc99ff 83.33%, 
+                #ff9999 100%) !important;
         }
     </style>
 </head>
@@ -165,6 +513,7 @@
         <div class="toggle-container">
             <button id="modeToggle">🌙</button>
         </div>
+        <button id="collectionBtn">🗂️</button>
         <div class="icon">
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -243,17 +592,33 @@
         </div>
     </div>
 
+
+
     <div id="feed"></div>
     
     <div id="sentinel"></div>
 
-    <!-- overlay for color replies -->
-    <div id="replyOverlay">
-        <button class="close-btn" id="overlayClose">×</button>
-        <div class="overlay-header" style="color:#fff; margin-bottom:10px; font-size:1.2rem;">
-            Color Replies:
+    <!-- Response modal for post interactions -->
+    <div id="responseModal" class="response-modal">
+        <div class="response-content">
+            <div class="response-text" id="responseText"></div>
+            <div class="artifact-found" id="artifactDisplay" style="display:none;"></div>
+            <div class="rarity-label" id="rarityLabel" style="display:none;"></div>
+            <button class="modal-close" id="closeResponse">Continue</button>
         </div>
-        <div class="replies" id="repliesContainer"></div>
+    </div>
+
+    <!-- Collection modal -->
+    <div class="collection-modal" id="collectionModal">
+        <div class="collection-content">
+            <div class="collection-title">🗂️ ARTIFACTS</div>
+            <div class="collection-grid" id="artifactsList"></div>
+            <div class="kitten-count-modal">
+                🐱 Found: <span id="kittenCounter">0</span>
+            </div>
+            <button class="modal-close-btn" id="resetBtn" style="background: rgba(255,100,100,0.2); border-color: rgba(255,100,100,0.5); margin-bottom: 10px;">Reset Progress</button>
+            <button class="modal-close-btn" id="closeCollection">Close</button>
+        </div>
     </div>
 
     <!-- floating support me button -->
@@ -262,6 +627,142 @@
     <script>
         const feedContainer = document.getElementById('feed');
         const sentinel = document.getElementById('sentinel');
+        const responseModal = document.getElementById('responseModal');
+        const responseText = document.getElementById('responseText');
+        const artifactDisplay = document.getElementById('artifactDisplay');
+        const rarityLabel = document.getElementById('rarityLabel');
+        const closeResponse = document.getElementById('closeResponse');
+        const collectionModal = document.getElementById('collectionModal');
+        const collectionBtn = document.getElementById('collectionBtn');
+        const closeCollection = document.getElementById('closeCollection');
+        const artifactsList = document.getElementById('artifactsList');
+
+        // Game state
+        let artifacts = {};
+        let foundKitten = false;
+        let kittenCount = 0;
+        loadArtifacts();
+
+        // Artifact library with rarity tiers
+        const artifactLibrary = {
+            common: [
+                { emoji: '🎲', name: 'die', rarity: 'common' },
+                { emoji: '📎', name: 'paperclip', rarity: 'common' },
+                { emoji: '🪙', name: 'coin', rarity: 'common' },
+                { emoji: '🔑', name: 'key', rarity: 'common' },
+                { emoji: '💫', name: 'sparkle', rarity: 'common' },
+            ],
+            uncommon: [
+                { emoji: '🎯', name: 'target', rarity: 'uncommon' },
+                { emoji: '🎨', name: 'palette', rarity: 'uncommon' },
+                { emoji: '🔮', name: 'crystal ball', rarity: 'uncommon' },
+                { emoji: '⚡', name: 'lightning', rarity: 'uncommon' },
+                { emoji: '🌙', name: 'moon', rarity: 'uncommon' },
+            ],
+            rare: [
+                { emoji: '👁️', name: 'eye', rarity: 'rare' },
+                { emoji: '🦴', name: 'bone', rarity: 'rare' },
+                { emoji: '🪐', name: 'planet', rarity: 'rare' },
+                { emoji: '🌌', name: 'cosmos', rarity: 'rare' },
+            ],
+            epic: [
+                { emoji: '💎', name: 'gem', rarity: 'epic' },
+                { emoji: '🏆', name: 'trophy', rarity: 'epic' },
+                { emoji: '⭐', name: 'star', rarity: 'epic' },
+            ],
+            kitten: { emoji: '🐱', name: 'kitten', rarity: 'kitten' }
+        };
+
+        // Post objects (like robot finds kitten)
+        const postObjects = [
+            '🎮', '📖', '🎪', '🎭', '🎬', '🎸', '🎹', '🎺', '🎻', '🥁',
+            '🧩', '🎲', '🃏', '🎯', '🎳', '🏺', '⚱️', '🗿', '🗽', '🗼',
+            '🕯️', '💡', '🔦', '🕯️', '📿', '🧿', '🪬', '🪷', '🌸', '🌺',
+            '🍄', '🌲', '🌳', '🌴', '🎄', '🎋', '🎍', '⛩️', '🎎', '🏯',
+            '🎪', '🎨', '🎭', '🎬', '🎤', '🎧', '🎼', '📱', '💻', '⌨️',
+        ];
+
+        // Procedural text generation (Zork-style dynamic responses)
+        const textPatterns = {
+            actions: [
+                "You examine",
+                "You inspect",
+                "You look at",
+                "You touch",
+                "You study",
+                "You observe"
+            ],
+            qualities: [
+                "peculiar",
+                "strange",
+                "curious",
+                "oddly fascinating",
+                "bewildering",
+                "enigmatic"
+            ],
+            feelings: [
+                "unsettled",
+                "intrigued",
+                "unnerved",
+                "fascinated",
+                "perplexed",
+                "mesmerized"
+            ],
+            objects: [
+                "presence",
+                "aura",
+                "essence",
+                "reality",
+                "consciousness",
+                "being"
+            ],
+            locations: [
+                "nearby",
+                "in the distance",
+                "around you",
+                "above you",
+                "beneath the surface",
+                "at the edge"
+            ]
+        };
+
+        function generateDynamicResponse() {
+            const action = textPatterns.actions[Math.floor(Math.random() * textPatterns.actions.length)];
+            const quality = textPatterns.qualities[Math.floor(Math.random() * textPatterns.qualities.length)];
+            const feeling = textPatterns.feelings[Math.floor(Math.random() * textPatterns.feelings.length)];
+            const object = textPatterns.objects[Math.floor(Math.random() * textPatterns.objects.length)];
+            const location = textPatterns.locations[Math.floor(Math.random() * textPatterns.locations.length)];
+
+            const templates = [
+                `${action} the ${quality} ${object}. You feel ${feeling}.`,
+                `There is something ${quality} about this ${object}. It leaves you ${feeling}.`,
+                `The ${quality} ${object} here makes you feel ${feeling}. ${action} it carefully.`,
+                `You sense a ${quality} ${object} ${location}. How ${feeling}.`,
+                `${action} the ${quality} surface. A ${feeling} sensation washes over you.`,
+                `This ${quality} ${object} exudes a feeling of being ${feeling}. You ${action}.`,
+                `${action}. The air feels ${quality}. You are ${feeling}.`,
+            ];
+
+            return templates[Math.floor(Math.random() * templates.length)];
+        }
+
+        // Responses when clicking objects
+const responses=["This looks familiar but you can't quite remember why.","You wonder who left this here.","A small moment of beauty in an ordinary day.","You almost understand what this means.","Someone's story is hidden inside this.","You feel something shift when you touch it.","This meant something to someone, once.","It glows faintly in the corner of your eye.","You sense possibilities branching out from here.","A gentle reminder of something you forgot.","This artifact seems to whisper when no one's listening.","You feel less alone when you hold this.","It tastes like memories you don't have.","The way light hits it feels deliberate.","This is the kind of thing you keep forever.","You're certain you've dreamed of this before.","It's impossible but also somehow inevitable.","A question mark made physical.","Beauty hiding in plain sight.","Something about this makes you want to be better.",'I pity the fool who mistakes me for kitten!", sez Mr. T.',"That's just an old tin can.","It's an altar to the horse god.","A box of dancing mechanical pencils. They dance! They sing!","It's an old Duke Ellington record.","A box of fumigation pellets.","A digital clock. It's stuck at 2:17 PM.","That's just a charred human corpse.","I don't know what that is, but it's not kitten.","An empty shopping bag. Paper or plastic?","Could it be... a big ugly bowling trophy?","A coat hanger hovers in thin air. Odd.","Not kitten, just a packet of Kool-Aid(tm).","A freshly-baked pumpkin pie.","A lone, forgotten comma, sits here, sobbing.","ONE HUNDRED THOUSAND CARPET FIBERS!!!!!","It's Richard Nixon's nose!",'It\'s Lucy Ricardo. "Aaaah, Ricky!", she says.',"You stumble upon Bill Gates' stand-up act.","Just an autographed copy of the Kama Sutra.","It's the Will Rogers Highway. Who was Will Rogers, anyway?","It's another robot, more advanced in design than you but strangely immobile.","Leonard Richardson is here, asking people to lick him.","It's a stupid mask, fashioned after a beagle.","Your State Farm Insurance(tm) representative!","It's the local draft board.",'Seven 1/4" screws and a piece of plastic.',"An 80286 machine.",'One of those stupid "Homes of the Stars" maps.','A signpost saying "TO KITTEN". It points in no particular direction.',"A hammock stretched between a tree and a volleyball pole.","A Texas Instruments of Destruction calculator.","It's a dark, amphorous blob of matter.","Just a pincushion.","It's a mighty zombie talking about some love and prosperity.",'"Dear robot, you may have already won our 10 MILLION DOLLAR prize..."',"It's just an object.","A mere collection of pixels.","A badly dented high-hat cymbal lies on its side here.","A marijuana brownie.","A plush Chewbacca.","Daily hunger conditioner from Australasia","Just some stuff.","Why are you touching this when you should be finding kitten?","A glorious fan of peacock feathers.","It's some compromising photos of Babar the Elephant.","A copy of the Weekly World News. Watch out for the chambered nautilus!","It's the proverbial wet blanket.",'A "Get Out of Jail Free" card.','An incredibly expensive "Mad About You" collector plate.',"Paul Moyer's necktie.","A haircut and a real job. Now you know where to get one!","An automated robot-hater. It frowns disapprovingly at you.","An automated robot-liker. It smiles at you.","It's a black hole. Don't fall in!","Just a big brick wall.","You found kitten! No, just kidding.","Heart of Darkness brand pistachio nuts.","A smoking branding iron shaped like a 24-pin connector.","It's a Java applet.","An abandoned used-car lot.","A shameless plug for Crummy: http://www.crummy.com/","A shameless plug for the UCLA Linux Users Group: http://linux.ucla.edu/","A can of Spam Lite.","This is another fine mess you've gotten us into, Stanley.",'It\'s scenery for "Waiting for Godot".',"This grain elevator towers high above you.","A Mentos wrapper.","It's the constellation Pisces.","It's a fly on the wall. Hi, fly!","This kind of looks like kitten, but it's not.","It's a banana! Oh, joy!","A helicopter has crashed here.","Carlos Tarango stands here, doing his best impression of Pat Smear.","A patch of mushrooms grows here.","A patch of grape jelly grows here.","A spindle, and a grindle, and a bucka-wacka-woom!","A geyser sprays water high into the air.","A toenail? What good is a toenail?","You've found the fish! Not that it does you much good in this game.","A Buttertonsils bar.","One of the few remaining discoes.","Ah, the uniform of a Revolutionary-era minuteman.","A punch bowl, filled with punch and lemon slices.","It's nothing but a G-thang, baby.","IT'S ALIVE! AH HA HA HA HA!","This was no boating accident!","Wait! This isn't the poker chip! You've been tricked! DAMN YOU, MENDEZ!","A livery stable! Get your livery!","It's a perpetual immobility machine.",'"On this spot in 1962, Henry Winkler was sick."',"There's nothing here; it's just an optical illusion.","The World's Biggest Motzah Ball!","A tribe of cannibals lives here. They eat Malt-O-Meal for breakfast, you know.","This appears to be a rather large stack of trashy romance novels.","Look out! Exclamation points!","A herd of wild coffee mugs slumbers here.","It's a limbo bar! How low can you go?","It's the horizon. Now THAT'S weird.","A vase full of artificial flowers is stuck to the floor here.","A large snake bars your way.","A pair of saloon-style doors swing slowly back and forth here.","It's an ordinary bust of Beethoven... but why is it painted green?","It's TV's lovable wisecracking Crow! \"Bite me!\", he says.","Hey, look, it's war. What is it good for? Absolutely nothing. Say it again.","It's the amazing self-referential thing that's not kitten.","A flamboyant feather boa. Now you can dress up like Carol Channing!",'"Sure hope we get some rain soon," says Farmer Joe.','"How in heck can I wash my neck if it ain\'t gonna rain no more?" asks Farmer Al.',"\"Topsoil's all gone, ma,\" weeps Lil' Greg.","This is a large brown bear. Oddly enough, it's currently peeing in the woods.","A team of arctic explorers is camped here.","This object here appears to be Louis Farrakhan's bow tie.","This is the world-famous Chain of Jockstraps.","A trash compactor, compacting away.","This toaster strudel is riddled with bullet holes!","It's a hologram of a crashed helicopter.","This is a television. On screen you see a robot strangely similar to yourself.","This balogna has a first name, it's R-A-N-C-I-D.","A salmon hatchery? Look again. It's merely a single salmon.","It's a rim shot. Ba-da-boom!","It's creepy and it's kooky, mysterious and spooky. It's also somewhat ooky.","This is an anagram.","This object is like an analogy.","It's a symbol. You see in it a model for all symbols everywhere.","The object pushes back at you.","A traffic signal. It appears to have been recently vandalized.",'"There is no kitten!" cackles the old crone. You are shocked by her blasphemy.',"This is a Lagrange point. Don't come too close now.","The dirty old tramp bemoans the loss of his harmonica.","Look, it's Fanny the Irishman!","What in blazes is this?","It's the instruction manual for a previous version of this game.","A brain cell. Oddly enough, it seems to be functioning.","Tea and/or crumpets.","This jukebox has nothing but Cliff Richards albums in it.","It's a Quaker Oatmeal tube, converted into a drum.","This is a remote control. Being a robot, you keep a wide berth.","It's a roll of industrial-strength copper wire.","Oh boy! Grub! Er, grubs.","A puddle of mud, where the mudskippers play.","Plenty of nothing.","Look at that, it's the Crudmobile.","Just Walter Mattheau and Jack Lemmon.","Two crepes, two crepes in a box.",'An autographed copy of "Primary Colors", by Anonymous.',"Another rabbit? That's three today!","It's a segmentation fault. Core dumped, by the way.","A historical marker showing the actual location of /dev/null.","Thar's Mobius Dick, the convoluted whale. Arrr!","It's a charcoal briquette, smoking away.","A pizza, melting in the sun.",'It\'s a "HOME ALONE 2: Lost in New York" novelty cup.',"A stack of 7 inch floppies wobbles precariously.","It's nothing but a corrupted floppy. Coaster anyone?","A section of glowing phosphor cells sings a song of radiation to you.","This TRS-80 III is eerily silent.","A toilet bowl occupies this space.","This peg-leg is stuck in a knothole!","It's a solitary vacuum tube.","This corroded robot is clutching a mitten.","\"Hi, I'm Anson Williams, TV's 'Potsy'.\"","This subwoofer was blown out in 1974.","Three half-pennies and a wooden nickel.",'It\'s the missing chapter to "A Clockwork Orange".','It\'s a burrito stand flyer. "Taqueria El Ranchito".',"This smiling family is happy because they eat LARD.","Roger Avery, persona un famoso de los Estados Unidos.","Ne'er but a potted plant.","A parrot, kipping on its back.","A forgotten telephone switchboard.","A forgotten telephone switchboard operator.","It's an automated robot-disdainer. It pretends you're not there.",'It\'s a portable hole. A sign reads: "Closed for the winter".',"Just a moldy loaf of bread.","A little glass tub of Carmex. ($.89) Too bad you have no lips.","A Swiss-Army knife. All of its appendages are out. (toothpick lost)","It's a zen simulation, trapped within an ASCII character.",'It\'s a copy of "The Rubaiyat of Spike Schudy".','It\'s "War and Peace" (unabridged, very small print).',"A willing, ripe tomato bemoans your inability to digest fruit.","A robot comedian. You feel amused.","It's KITT, the talking car.","Here's Pete Peterson. His batteries seem to have long gone dead.",'"Blup, blup, blup", says the mud pot.',"More grist for the mill.","Grind 'em up, spit 'em out, they're twigs.","The boom box cranks out an old Ethel Merman tune.","It's \"Finding kitten\", published by O'Reilly and Associates.","Pumpkin pie spice.","It's the Bass-Matic '76! Mmm, that's good bass!",'"Lend us a fiver \'til Thursday", pleas Andy Capp.',"It's a tape of '70s rock. All original hits! All original artists!","You've found the fabled America Online disk graveyard!","Empty jewelboxes litter the landscape.","It's the astounding meta-object.",'Ed McMahon stands here, lost in thought. Seeing you, he bellows, "YES SIR!"',"...thingy???","It's 1000 secrets the government doesn't want you to know!","The letters O and R.","A magical... magic thing.","It's a moment of silence.","It's Sirhan-Sirhan, looking guilty.",'It\'s "Chicken Soup for the Kitten-seeking Soulless Robot."',"It is a set of wind-up chatter teeth.","It is a cloud shaped like an ox.","You see a snowflake here, melting slowly.","It's a big block of ice. Something seems to be frozen inside it.","Vladimir Lenin's casket rests here.",'It\'s a copy of "Zen and The Art of Robot Maintenance".',"This invisible box contains a pantomime horse.",'A mason jar lies here open. Its label reads: "do not open!".',"A train of thought chugs through here.","This jar of pickles expired in 1957.","Someone's identity disk lies here.",'"Yes!" says the bit.','"No!" says the bit.',"A dodecahedron bars your way.","Mr. Hooper is here, surfing.","It's a big smoking fish.","You have new mail in /var/spool/robot","Just a monitor with the blue element burnt out.","A pile of coaxial plumbing lies here.","It's a rotten old shoe.","It's a hundred-dollar bill.","It's a Dvorak keyboard.","It's a cardboard box full of 8-tracks.","Just a broken hard drive containg the archives of Nerth Pork.","A broken metronome sits here, its needle off to one side.",'A sign reads: "Go home!"','A sign reads: "No robots allowed!"',"It's the handheld robotfindskitten game, by Tiger.","This particular monstrosity appears to be ENIAC.","This is a tasty-looking banana creme pie.","A wireframe model of a hot dog rotates in space here.","Just the empty husk of a locust.","You disturb a murder of crows.","It's a copy of the robotfindskitten EULA.","It's Death.",'It\'s an autographed copy of "Secondary Colors," by Bob Ross.',"It is a marzipan dreadnought that appears to have melted and stuck.",'It\'s a DVD of "Crouching Monkey, Hidden Kitten", region encoded for the moon.',"It's Kieran Hervold.  Damn dyslexia!","A non-descript box of crackers.","Carbonated Water, High Fructose Corn Syrup, Color, Phosphoric Acid, Flavors, Caffeine.",'"Move along! Nothing to see here!"',"It's the embalmed corpse of Vladimir Lenin.","A coupon for one free steak-fish at your local family diner.","A set of keys to a 2001 Rolls Royce. Worthless.",'A gravestone stands here.  "Izchak Miller, ascended."','Someone has written "ad aerarium" on the ground here.',"A large blue eye floats in midair.","This appears to be a statue of Perseus.","There is an opulent throne here.","It's a squad of Keystone Kops.","This seems to be junk mail addressed to the finder of the Eye of Larn.","A wondrous and intricate golden amulet.  Too bad you have no neck.","The swampy ground around you seems to stink with disease.","An animate blob of acid.  Being metallic, you keep well away.","It's a copy of Knuth with the chapter on kitten-search algorithms torn out.","A crowd of people, and at the center, a popular misconception.","It's a blind man. When you touch, he exclaims \"It's a kitten prospecting robot!\"","It's a lost wallet. It's owner didn't have pets, so you discard it.","This place is called Antarctica. There is no kitten here.","It's a mousetrap, baited with soap.",'A book with "Don\'t Panic" in large friendly letters across the cover.',"A compendium of haiku about metals.","A discredited cosmology, relic of a bygone era.",'A hollow voice says "Plugh".','A knight who says "Either I am an insane knave, or you will find kitten.".',"A neural net -- maybe it's trying to recognize kitten.","A screwdriver.","A statue of a girl holding a goose like the one in Gottingen, Germany.",'A tetradrachm dated "42 B.C."','A voice booms out "Onward, kitten soldiers..."',"An eminently forgettable zahir.","Apparently, it's Edmund Burke.","For a moment, you feel something in your hands, but it disappears!","Here is a book about Robert Kennedy.","Hey, robot, leave those lists alone.","Ho hum.  Another synthetic a posteriori.","It's Asimov's Laws of Robotics.  You feel a strange affinity for them.","It's Bach's Mass in B-minor!","It's a bug.","It's a synthetic a priori truth!  Immanuel would be so pleased!","It's the Tiki Room.","Just some old play by a Czech playwright, and you can't read Czech.","Kitten is the letter 'Q'.  Oh, wait, maybe not.","Quidquid Latine dictum sit, kitten non est.","Sutro Tower is visible at some distance through the fog.","The Digital Millennium Copyright Act of 1998.","The United States Court of Appeals for the Federal Circuit.",'The non-kitten item like this but with "false" and "true" switched is true.','The non-kitten item like this but with "true" and "false" switched is false.','This is the chapter called "A Map of the Cat?" from Feynman\'s autobiography.',"This is the forest primeval.",'Werner\'s "Pocket Field Guide to Things That Are Not Kitten".',"You found nettik, but that's backwards.","You have found some zinc, but you must not stop here, for you must find kitten.",'"50 Years Among the Non-Kitten Items", by Ann Droyd.','"Robot may not injure kitten, or, through inaction, ..."','"Address Allocation for Private Internets" by Yakov Rekhter et al.','"Mail Routing and the Domain System" by Craig Partridge.','"The Theory and Practice of Oligarchical Collectivism" by Emmanuel Goldstein.','"201 Kitten Verbs, Fully Conjugated".  You look for "find".',"A card shark sits here, practicing his Faro shuffle.  He ignores you.","A copy of DeCSS.  They're a dime a dozen these days.",'A demonic voice proclaims "There is no kitten, only Zuul".  You flee.',"A lotus.  You make an interesting pair.","A milk carton, with a black and white picture of kitten on the side.","Any ordinary robot could see from a mile away that this wasn't kitten.","A stegosaurus, escaped from the stegosaurusfindsrobot game.  It finds you.","Baling wire and chewing gum.","Chewing gum and baling wire.","Here is no kitten but only rock, rock and no kitten and the sandy road.","Hey, I bet you thought this was kitten.","It is an ancient mariner, and he stoppeth one of three.","It pleases you to be kind to what appears to be kitten -- but it's not!","It's a blatant plug for Ogg Vorbis, http://www.vorbis.com/","It's a business plan for a new startup, kitten.net.","It's a revised business plan for a new startup, my.kitten.net.","It's a square.",'It seems to be a copy of "A Tail of Two Kitties".',"It's the Donation of Constantine!","It's this message, nothing more.","Lysine, an essential amino acid.  Well, maybe not for robots.","No kitten here.",'The score for a Czech composer\'s "Kitten-Finding Symphony in C".',"This looks like Bradley's \"Appearance and Reality\", but it's really not.","This non-kitten item no verb.","You feel strangely unfulfilled.","You hit the non-kitten item.  The non-kitten item fails to yowl.","You suddenly yearn for your distant homeland.","You've found the snows of yesteryear!  So that's where they all went to.","Approaching.  One car.  J.  Followed by.  Two car.  M, M.  In five. Minutes.","Free Jon Johansen!","Free Dmitry Sklyarov!",'One person shouts "What do we want?" The crowd answers "Free Dmitry!"',"Judith Platt insults librarians.","This map is not the territory.",'"Go back to Libraria!", says Pat Schroeder.',"This is a porcelain kitten-counter.  0, 0, 0, 0, 0...","An old bootable business card, unfortunately cracked down the middle.","A kitten sink, for washing kitten (if only kitten liked water).","A kitten source (to match the kitten sink).","If it's one thing, it's not another.","If it's not one thing, it's another.","A caboodle.","A grin.","A hedgehog.  It looks like it knows something important.","You've found... Oh wait, that's just a cat.","Robot should not be touching that.","Air Guitar!!!  NA na NA na!!","An aromatherapy candle burns with healing light.","You find a bright shiny penny.","It's a free Jon Johansen!","It's a free Dmitry Sklyarov!","The rothe hits!  The rothe hits!","It's an Internet chain letter about sodium laureth sulfate.","Ed Witten sits here, pondering string theory.",'Something is written here in the dust.  You read: "rJbotf ndQkttten".',"We wish you a merry kitten, and a happy New Year!","Run away!  Run away!",'You can see right through this copy of Brin\'s "Transparent Society".','This copy of "Steal This Book" has been stolen from a bookstore.',"It's Roya Naini.","This kit is the fourteenth in a series of kits named with Roman letters.","This is the tenth key you've found so far.","You find a fraud scheme in which loans are used as security for other loans.",'It\'s the phrase "and her", written in ancient Greek.','It\'s the author of "Randomness and Mathematical Proof".',"It's the crusty exoskeleton of an arthropod!","It's Emporer Shaddam the 4th's planet!","It's the triangle leg adjacent to an angle divided by the leg opposite it.","It's a bottle of nail polish remover.","You found netkit! Way to go, robot!","It's the ASCII Floating Head of Seth David Schoen!","A frosted pink party-cake, half eaten.","A bitchin' homemade tesla coil.","Conan O'Brian, sans jawbone.","It's either a mirror, or another soulless kitten-seeking robot.","Preoccupation with finding kitten prevents you from investigating further.","Fonzie sits here, mumbling incoherently about a shark and a pair of waterskis.","The ghost of your dance instructor, his face a paper-white mask of evil.","A bag of groceries taken off the shelf before the expiration date.","A book: Feng Shui, Zen: the art of randomly arranging items that are not kitten.","This might be the fountain of youth, but you'll never know.","Tigerbot Hesh.","Stimutacs.","A canister of pressurized whipped cream, sans whipped cream.","The non-kitten item bites!","A chain hanging from two posts reminds you of the Gateway Arch.","A mathematician calculates the halting probability of a Turing machine.","A number of short theatrical productions are indexed 1, 2, 3, ... n.","A technical university in Australia.","It is -- I just feel something wonderful is about to happen.","It's a Cat 5 cable.","It's a U.S. president.","It's a piece of cloth used to cover a stage in between performances.","The ionosphere seems charged with meaning.","This tomography is like, hella axial, man!","It's your favorite game -- robotfindscatan!","Just a man selling an albatross.","The intermission from a 1930s silent movie.","It's an inverted billiard ball!","The spectre of Sherlock Holmes wills you onwards.","It's the blink tag!","The document type definition for a Kitten Object Model.","The number 22.  Could this be a COINCIDENCE?!","A copy of 'The Art of War', but all the words are replaced with 'kitten'.","A copy of 'The Art of War', but all the words are replaced with 'not kitten'.","The number 67.","As seen on TV!","Awesome!","100% pure!","May contain nuts!","More polygons!","Moderately attractive!","Limited edition!","Flashing letters!","It's here!","Best in class!","It's finished!","Kind of dragon free!","Excitement!","More than 500 sold!","One of a kind!","Heaps of hits on YouTube!","Batt tree!","Spiders everywhere!","Check it out!","Holy cow, man!","It's a game!","Uses LWJGL!","Reticulating splines!","Yaaay!","Singleplayer!","Keyboard compatible!","Ingots!","Exploding creepers!","That's no moon!","l33t!","Create!","Survive!","Dungeon!","Exclusive!","The bee's knees!","Closed source!","Classy!","Wow!","Not on steam!","Oh man!","Awesome community!","Pixels!","Teetsuuuuoooo!","Kaaneeeedaaaa!","Now with difficulty!","Enhanced!","90% bug free!","Pretty!","12 herbs and spices!","Fat free!","Absolutely no memes!","Free dental!","Ask your doctor!","Cloud computing!","Hard to label!","Technically good!","Bringing home the bacon!","Indie!","GOTY!","Ceci n'est pas une title screen!","Euclidian!","Now in 3D!","Inspirational!","Herregud!","Complex cellular automata!","Yes, sir!","Played by cowboys!","Now on OpenGL 3.2 core profile!","Thousands of colors!","Try it!","Age of Wonders is better!","Try the mushroom stew!","Sensational!","Hot tamale, hot hot tamale!","Play him off, keyboard cat!","Guaranteed!","Macroscopic!","Bring it on!","Random splash!","Call your mother!","Monster infighting!","Loved by millions!","Ultimate edition!","Freaky!","You've got a brand new key!","Water proof!","Uninflammable!","Whoa, dude!","All inclusive!","Tell your friends!","NP is not in P!","Music by C418!","Livestreamed!","Haunted!","Polynomial!","Terrestrial!","All is full of love!","Full of stars!","Scientific!","Not as cool as Spock!","Collaborate and listen!","Never dig down!","Take frequent breaks!","Not linear!","Han shot first!","Nice to meet you!","Buckets of lava!","Ride the pig!","Larger than Earth!","sqrt(-1) love you!","Phobos anomaly!","Punching wood!","Falling off cliffs!","1% sugar!","150% hyperbole!","Synecdoche!","Let's danec!","Seecret Friday update!","Reference implementation!","Kiss the sky!","20 GOTO 10!","Verlet integration!","Peter Griffin!","Do distribute!","Cogito ergo sum!","4815162342 lines of code!","A skeleton popped out!","The sum of its parts!","BTAF used to be good!","I miss ADOM!","umop-apisdn!","OICU812!","Bring me Ray Cokes!","Finger-licking!","Thematic!","Pneumatic!","Sublime!","Octagonal!","Une baguette!","Gargamel plays it!","Rita is the new top dog!","SWM forever!","Representing Edsbyn!","Matt Damon!","Supercalifragilisticexpialidocious!","Consummate V's!","Cow Tools!","Double buffered!","Fan fiction!","Flaxkikare!","Jason! Jason! Jason!","Hotter than the sun!","Internet enabled!","Autonomous!","Engage!","Fantasy!","DRR! DRR! DRR!","Kick it root down!","Regional resources!","Woo, facepunch!","Woo, somethingawful!","Woo, tigsource!","Woo, spacehey!","Woo, 2pp!","Google anlyticsed!","Now supports åäö!","Give us Gordon!","Tip your waiter!","Very fun!","12345 is a bad password!","Vote for net neutrality!","Lives in a pineapple under the sea!","MAP11 has two names!","Omnipotent!","Gasp!","...!","Bees, bees, bees, bees!","Jag känner en bot!","This text is hard to read if you play the game at the default resolution, but at 1080p it's fine!","Haha, LOL!","Hampsterdance!","Menger sponge!","idspispopd!","Eple (original edit)!","So fresh, so clean!","Slow acting portals!","Try the Nether!","Don't look directly at the bugs!","Oh, ok, Pigmen!","Finally with ladders!","Scary!","Play Minecraft, Watch Topgear, Get Pig!","Twittered about!","Jump up, jump up, and get down!","Joel is neat!","A riddle, wrapped in a mystery!","This parrot is no more! It has ceased to be!","Welcome to your Doom!","Stay a while, stay forever!","Stay a while and listen!","Treatment for your rash!","'Autological' is!","Information wants to be free!","'Almost never' is an interesting concept!","Lots of truthiness!","The creeper is a spy!","Turing complete!","It's groundbreaking!","Let our battle's begin!","The sky is the limit!","Ryan also has amazing hair!","Casual gaming!","Undefeated!","Kinda like Lemmings!","Follow the train, CJ!","Leveraging synergy!","This message will never appear on the splash screen, isn't that weird?","DungeonQuest is unfair!","90210!","Check out the far lands!","Tyrion would love it!","Also try VVVVVV!","Also try Super Meat Boy!","Also try Terraria!","Also try Mount And Blade!","Also try Project Zomboid!","Also try World of Goo!","Also try Limbo!","Also try Pixeljunk Shooter!","Also try Braid!","That's super!","Bread is pain!","Read more books!","Khaaaaaaaaan!","Less addictive than TV Tropes!","More addictive than lemonade!","Bigger than a bread box!","Millions of peaches!","Fnord!","This is my true form!","Don't bother with the clones!","Pumpkinhead!","Finally complete!","Feature packed!","Boots with the fur!","Stop, hammertime!","Testificates!","Conventional!","Homeomorphic to a 3-sphere!","Doesn't avoid double negatives!","Place ALL the blocks!","Does barrel rolls!","Meeting expectations!","PC gaming since 1873!","Ghoughpteighbteau tchoghs!","Déjà vu!","Got your nose!","Haley loves Elan!","Afraid of the big, black bat!","Doesn't use the U-word!","Child's play!","See you next Friday or so!","From the streets of Södermalm!","150 bpm for 400000 minutes!","Technologic!","Funk soul brother!","Pumpa kungen!","Helo Cymru!","Cześć Polsko!","My life for Aiur!","Lennart lennart = new Lennart();","I see your vocabulary has improved!","Who put it there?","You can't explain that!","if not ok then return end","Big Pointy Teeth!","Bekarton guards the gate!","Mmmph, mmph!","Don't feed avocados to parrots!","Swords for everyone!","Plz reply to my tweet!",".party()!","Take her pillow!","Put that cookie down!","Pretty scary!","I have a suggestion.","Now with extra hugs!","Java 16 + 1 + 4 = 21!","Woah.","HURNERJSGER?","What's up, Doc?","Now contains 32 random daily cats!","That's Numberwang!","pls rt","Do you want to join my server?","Put a little fence around it!","Throw a blanket over it!","One day, somewhere in the future, my work will be quoted!","Now with additional stuff!","Extra things!","Yay, puppies for everyone!","So sweet, like a nice bon bon!","Very influential in its circle!","Now With Multiplayer!","Rise from your grave!","Warning! A huge battleship 'STEVE' is approaching fast!","Blue warrior shot the food!","Run, coward! I hunger!","Flavor with no seasoning!","Strange, but not a stranger!","Tougher than diamonds, rich like cream!","It swings, it jives!","Cruising streets for gold!","Take an eggbeater and beat it against a skillet!","Make me a table, a funky table!","Take the elevator to the mezzanine!","Stop being reasonable, this is the Internet!","/give @a hugs 64","This is good for Realms.","Any computer is a laptop if you're brave enough!","Do it all, everything!","Where there is not light, there can spider!","GNU Terry Pratchett","More Digital!","doot doot","Falling with style!","There's no stopping the Trollmaso","Throw yourself at the ground and miss","Rule #1: it's never my fault","Replaced molten cheese with blood?","Absolutely fixed relatively broken coordinates","Boats FTW","Javalicious edition","Should not be played while driving","You're going too fast!","Don't feed chocolate to parrots!","The true meaning of covfefe","An illusion! What are you hiding?","Something's not quite right...","Thank you for the fish!","All rumors are true!","Truly gone fishing!","Rainbow turtle?","Something funny!","I need more context.","Ahhhhhh!","Don't worry, be happy!","Water bottle!","What's the question?","Plant a tree!","Go to the dentist!","What do you expect?","Look mum, I'm in a splash!","It came from space.","Awesome game design right there!","Ph1lza had a good run!","10 years of Mining and Crafting!","Ping the human!","In case it isn't obvious, foxes aren't players.","Buzzy Bees!","Wash your hands!","Soap and water!","Support local businesses!","Stay home and play games!","Stay safe!","Stay strong!","Cough or sneeze into your elbow!","Don't touch your face!","Support elderly relatives and friends!","Prepare, but don't hoard!","Gamers unite – separately in your own homes!","Save the world – stay inside!","Shop for your elders!","Hang out with your friends online!","Honey, I grew the bees!","Find your claw!","Everybody do the Leif!","<3 Max & 99 & Ducky!","Bushy eyebrows!","Edit is a name!","From free range developers!","Music by Lena Raine!","Aww man!","And my pickaxe!","Envision! Create! Share!","Fabulous graphics!","Vanilla!","May contain traces of citrus!","Zoglin!?","Black lives matter!","Be anti-racist!","Learn about allyship!","Speak OUT against injustice and UP for equality!","Amplify and listen to BIPOC voices!","Educate your friends on anti-racism!","Support the BIPOC community and creators!","Stand up for equality in your community!","[this splash text is now available]","Contains simulated goats!","Home-made!","There's <<a cat on ,my keyboard!~","The cutest predator you'll ever meet!","Now you are thinking with pistons!","Get to the coppah!","Board game version also available!","Honey, I waxed the copper!","Plant-based light sources!","Made by 'real' people!","Shriek like a Sculk Shrieker!","Who let the frogs out?","RIBBIT!","Croak team!","Nooooooooooooo!","Flower forest TM perfume","Hat Fridays!","Technoblade never dies!","You are valid!","I'm glad you're here!","You are welcome here!","Your gender is valid!","Contains infinite genders!","Made with lave!","This sand is sus","Remember to brush your... ...teeth","Has working bookshelves!","Sniff sniff...","Place hanging sign here","Joule is neat too!","ඞඞඞ","Woo, Linux!","A robot running free and open source software is a robot with a soul!","Mirteaaa from Twitter!","Build a website!","Build a website, they said. It will be fun, they said!","This is fine.","Let's unpack that.","It's more complicated than you think.","I'm not like other philosophers.","Existential crisis intensifies.","The simulation is glitching.","Hot take incoming...","That's very on-brand for late stage capitalism.","We live in a society.","The matrix has you.","What even is reality?","Touching grass solves most problems.","The trolley problem hits different now.","Main character energy.","That's a mood.","Big if true, philosophical if real.","The vibes are immaculate.","Not to get all Socrates on you...","As Marx would say...","Peak irony, honestly.","It's giving existential dread.","That's a vibe check fail.","Schrodinger's decision.","We're all just clout-chasing atoms.","This slaps harder than Descartes.","Go touch some phenomenology.","The discourse is unhinged.","Manifest destinied.","Gaslit by the algorithm.","Your ontology is showing.","Epistemically I'm struggling.","Zero philosophical grounding, and it shows.","No cap, that's mad Kantian.","The postmodern aesthetic is real.","Dialectically speaking, yikes.","Your subtext is text.","Hegelian synthesis of vibes.","Peak nihilism: this matters and doesn't.","A metaphysician walks into a bar. The bartender asks, 'What'll it be?' The metaphysician replies, 'How do you know I'm really here?'","Under techno-feudalism, you don't own your data, your data owns you. The algorithm is the new land lord, and we're all digital serfs.","Late stage capitalism: You pay to exist on a platform you don't own, selling your attention to companies that sell your data to other companies. It's feudalism, but make it digital.","Install GrapheneOS on your phone!","Free software is freedom, and freedom is a fundamental human right. Support free software!","The only way to win is not to play.","Free Edward Snowden!","Free Chelsea Manning!","Free Julian Assange!","Smoothie recipe: Blend banana, spinach, oat milk, and frozen berries for a quick breakfast.","Tea time: Steep jasmine tea with a splash of honey and lemon for a soothing afternoon drink.","Gazpacho: Blend tomatoes, cucumbers, bell peppers, olive oil, and garlic for a cold summer soup.","Matcha latte: Whisk matcha powder with hot water, add steamed milk and a touch of vanilla.","Hummus bowl: Blend chickpeas, tahini, lemon juice, and garlic, serve with veggies.","Iced coffee: Brew strong coffee, chill it, pour over ice, add oat milk and vanilla syrup.","Pesto pasta: Blend basil, pine nuts, garlic, olive oil, and nutritional yeast, toss with pasta.","Golden milk: Turmeric, ginger, coconut milk, and honey warmed together for wellness.","@someone: This is a mention!","#hashtag: This is a hashtag!","http://example.com: This is a URL!","2 mg of estradiol valerate is a common starting dose for hormone replacement therapy","wheres the kitten?!","where's the moderation on this platform?!","YOU'VE FOUND PIKACHU! Congratulations, you caught an electric-type Pokémon!","YOU'VE FOUND CHARIZARD! A powerful fire-breathing dragon awaits!","YOU'VE FOUND BLASTOISE! Splashy victory is yours!","YOU'VE FOUND VENUSAUR! Nature's wrath has been captured!","YOU'VE FOUND MEWTWO! You've caught the legendary psychic beast!","YOU'VE FOUND DRAGONITE! The ultimate dragon Pokémon is now yours!","YOU'VE FOUND ALAKAZAM! With an IQ of 5000, this genius is on your team!","YOU'VE FOUND GYARADOS! You've tamed the fearsome sea monster!","The permafrost has melted. You're wading through what used to be solid ground.","Rising sea levels have claimed the cities. You navigate between the ruins of skyscrapers.","The coral reefs are bleached white. You float through a graveyard of ecosystems.","Wildfire smoke fills the sky. Ash falls like snow on the dead forest.","The aquifer is dry. Every well you find is empty.","A dust storm approaches. You can see it on the horizon, swallowing everything.","The last polar bear passed through here. You find only its skeleton.","War has ravaged the land. You see the scars of battle everywhere, but the sound of gunfire is long gone.","A sign reading 'This is fine.' hangs above a burning room.","You find a broken hyperlink. It leads nowhere. It never did.","Speedrunners have left markers on the ground here. You don't understand the route.","A screenshot of a Discord server where everyone is typing... and then nothing.","The sacred archive of memes, organized by exact release date and pixel-perfect quality.","Someone's abandoned Twitch stream still running. The chat hasn't moved in years.","A scrawled note: 'POV: You're about to witness something unhinged.'","Wojak faces carved into stone, arranged in cryptic patterns.","A shrine to early 2000s web design. The frames are still loading.","The last email ever sent. It just says 'k'.","A Wikipedia article about itself. It's been edited 47,000 times.","The comment section of a YouTube video from 2007. It's still arguing.","A QR code that links to a QR code that links to another QR code. Infinite recursion.","Graffiti reading: 'Ratio + Didn't ask + Don't care' in perfect calligraphy.","The original source of the 'this is fine' dog, looking unwell.","A phone displaying a notification that never clears. It haunts you.","Someone left a cryptic ARG breadcrumb here. You feel like you're missing the meta-lore.","The skeleton of a Twitter account that was purged. Follow count: eternal.","A sticky note with just '(っ˘̩╭╮˘̩)っ' written on it. You feel understood.","The birthplace of a thousand remixes. They all sound the same now.","A time capsule full of jpeg compression artifacts from 2009.","You stumble upon a lost meme. It was funny once, but now it's just sad.","You stumbled upon a .webp file.","Team Jacob vs. Team Edward? How about Team Neither?","Groverhaus!","What if Kermit were to make you the muppet for once? ... - The Muppet Joker","Something is growing here 🌱","You saw a glowing TV.","An iPod classic with 254 songs, it somehow still has battery life.","A friendly witch offers you a potion. You drink it and feel... different.","Patient needs more mousebites.","Cuddy, where is my vi*****!?","⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⠞⢳⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡔⠋⠀⢰⠎⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⢆⣤⡞⠃⠀⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⢠⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⢀⣀⣾⢳⠀⠀⠀⠀⢸⢠⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n⣀⡤⠴⠊⠉⠀⠀⠈⠳⡀⠀⠀⠘⢎⠢⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀\n⠳⣄⠀⠀⡠⡤⡀⠀⠘⣇⡀⠀⠀⠀⠉⠓⠒⠺⠭⢵⣦⡀⠀⠀⠀\n⠀⢹⡆⠀⢷⡇⠁⠀⠀⣸⠇⠀⠀⠀⠀⠀⢠⢤⠀⠀⠘⢷⣆⡀⠀\n⠀⠀⠘⠒⢤⡄⠖⢾⣭⣤⣄⠀⡔⢢⠀⡀⠎⣸⠀⠀⠀⠀⠹⣿⡀\n⠀⠀⢀⡤⠜⠃⠀⠀⠘⠛⣿⢸⠀⡼⢠⠃⣤⡟⠀⠀⠀⠀⠀⣿⡇\n⠀⠀⠸⠶⠖⢏⠀⠀⢀⡤⠤⠇⣴⠏⡾⢱⡏⠁⠀⠀⠀⠀⢠⣿⠃\n⠀⠀⠀⠀⠀⠈⣇⡀⠿⠀⠀⠀⡽⣰⢶⡼⠇⠀⠀⠀⠀⣠⣿⠟⠀\n⠀⠀⠀⠀⠀⠀⠈⠳⢤⣀⡶⠤⣷⣅⡀⠀⠀⠀⣀⡠⢔⠕⠁⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠫⠿⠿⠿⠛⠋⠁⠀⠀⠀⠀",":3"];
+
+        // Chance table for artifacts (rarity: probability out of 100)
+        function rollForArtifact() {
+            const roll = Math.random() * 100;
+            if (roll < 18) return 'common';
+            if (roll < 28) return 'uncommon';
+            if (roll < 35) return 'rare';
+            if (roll < 38) return 'epic';
+            return null; // No artifact
+        }
+
+        // Check for kitten (very special)
+        function shouldFindKitten() {
+            return Math.random() < 0.02; // 2% chance
+        }
 
         // dark/light mode toggle
         const modeToggle = document.getElementById('modeToggle');
@@ -269,6 +770,8 @@
         modeToggle.addEventListener('click', () => {
             document.body.classList.toggle('light');
             topBar.classList.toggle('light');
+            collectionModal.classList.toggle('light');
+            responseModal.classList.toggle('light');
             if (document.body.classList.contains('light')) {
                 modeToggle.textContent = '☀️';
             } else {
@@ -276,143 +779,246 @@
             }
         });
 
-        // 1. Generate a random hex color
-        function getRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
+        // Collection modal controls
+        collectionBtn.addEventListener('click', () => {
+            collectionModal.classList.add('active');
+        });
+
+        closeCollection.addEventListener('click', () => {
+            collectionModal.classList.remove('active');
+        });
+
+        // Reset progress
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if (confirm('Are you sure? This will clear all artifacts and kitten counts.')) {
+                artifacts = {};
+                kittenCount = 0;
+                foundKitten = false;
+                localStorage.removeItem('quittrArtifacts');
+                localStorage.removeItem('quittrKittenCount');
+                updateCollectionDisplay();
+                feedContainer.innerHTML = '';
+                loadPosts(8);
+                collectionModal.classList.remove('active');
             }
-            return color;
+        });
+
+        // Close modal when clicking outside
+        collectionModal.addEventListener('click', (e) => {
+            if (e.target === collectionModal) {
+                collectionModal.classList.remove('active');
+            }
+        });
+
+        // Create a post card
+        function createPost() {
+            const post = document.createElement('div');
+            post.className = 'post-card';
+            if (document.body.classList.contains('light')) {
+                post.classList.add('light');
+            }
+
+            // Generate two random colors for gradient
+            const colors = [
+                // Original batch
+                '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
+                '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B88B', '#52C0A8',
+                '#FF8B94', '#A0C4FF', '#CAFFBF', '#FFD60A', '#FFC300',
+                '#FF006E', '#8338EC', '#FFBE0B', '#FB5607', '#E63946',
+                '#3A0CA3', '#2ECC71', '#F15BB5', '#00F5D4', '#FF9F1C',
+                '#2EC4B6', '#CDB4DB', '#FFC8DD', '#1D3557', '#E5989B',
+                '#00B4D8', '#03045E', '#90BE6D', '#F9C74F', '#F8961E',
+                '#F72585', '#7209B7', '#48CAE4', '#A3B18A', '#D90429',
+                '#06D6A0', '#118AB2', '#073B4C', '#EF476F', '#FFD166',
+                '#84A59D', '#F28482', '#F5CAC3', '#3D5A80', '#98C1D9',
+                '#E0FBFC', '#EE6C4D', '#293241', '#8ECAE6', '#219EBC',
+                '#023047', '#FFB703', '#FB8500', '#E9C46A', '#2A9D8F'
+            ];
+            
+            const color1 = colors[Math.floor(Math.random() * colors.length)];
+            let color2 = colors[Math.floor(Math.random() * colors.length)];
+            while (color2 === color1) {
+                color2 = colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            // 2% chance for trans flag, 2% chance for rainbow flag
+            let flagClass = '';
+            const flagRoll = Math.random() * 100;
+            if (flagRoll < 2) {
+                flagClass = 'trans-flag';
+            } else if (flagRoll < 4) {
+                flagClass = 'rainbow-flag';
+            }
+
+            // 15% chance to use procedurally generated response
+            const response = Math.random() < 0.15 ? generateDynamicResponse() : responses[Math.floor(Math.random() * responses.length)];
+
+            post.innerHTML = `
+                <div class="post-card-inner">
+                    <div class="post-card-front ${flagClass}" style="--card-color-1: ${color1}; --card-color-2: ${color2};"></div>
+                    <div class="post-card-back" style="--card-color-1: ${color1}; --card-color-2: ${color2};">
+                        <div>${response}</div>
+                    </div>
+                </div>
+            `;
+
+            post.addEventListener('click', () => {
+                // Only allow clicking if not already clicked
+                if (!post.classList.contains('clicked')) {
+                    post.classList.add('clicked');
+                    post.classList.add('flipped');
+                    
+                    // Small delay before showing interaction
+                    setTimeout(() => {
+                        showResponse(post);
+                    }, 300);
+                }
+            });
+
+            return post;
         }
 
-        // 2. Create a single box element
-        function createBox() {
-            const box = document.createElement('div');
-            box.className = 'box';
-            box.style.backgroundColor = getRandomColor();
+        // Show response when post is clicked
+        function showResponse(postElement) {
+            const isKittenFound = shouldFindKitten();
 
-            // clicking the box should open overlay with random replies
-            box.addEventListener('click', () => {
-                showReplies();
-            });
+            if (isKittenFound && !foundKitten) {
+                // KITTEN FOUND!
+                foundKitten = true;
+                kittenCount++;
+                saveArtifacts();
+                updateCollectionDisplay();
+                postElement.classList.add('kitten-found');
+                
+                // Show modal for kitten celebration
+                responseText.textContent = '🐱 YOU FOUND THE KITTEN! 🐱';
+                artifactDisplay.innerHTML = artifactLibrary.kitten.emoji;
+                artifactDisplay.style.display = 'block';
+                rarityLabel.textContent = 'QUEST COMPLETE - GAME RESTARTING';
+                rarityLabel.style.display = 'block';
+                
+                closeResponse.textContent = 'Find Another Kitten';
+                closeResponse.onclick = () => {
+                    responseModal.classList.remove('active');
+                    foundKitten = false;
+                    // Clear feed and start over
+                    feedContainer.innerHTML = '';
+                    loadPosts(8);
+                };
 
-            // add like button inside each box
-            const likeBtn = document.createElement('button');
-            likeBtn.className = 'like-btn';
-            likeBtn.textContent = '♥ 0';
-            likeBtn.style.position = 'absolute';
-            likeBtn.style.bottom = '10px';
-            likeBtn.style.right = '10px';
-            likeBtn.style.background = 'rgba(255,255,255,0.8)';
-            likeBtn.style.border = 'none';
-            likeBtn.style.borderRadius = '12px';
-            likeBtn.style.padding = '5px 10px';
-            likeBtn.style.cursor = 'pointer';
-            likeBtn.dataset.likes = 0;
-
-            likeBtn.addEventListener('click', () => {
-                let count = parseInt(likeBtn.dataset.likes, 10);
-                count += 1;
-                likeBtn.dataset.likes = count;
-                likeBtn.textContent = `♥ ${count}`;
-            });
-
-            // retweet button to the right
-            const retweetBtn = document.createElement('button');
-            retweetBtn.className = 'retweet-btn';
-            retweetBtn.textContent = '🔁 0';
-            retweetBtn.style.position = 'absolute';
-            retweetBtn.style.bottom = '10px';
-            retweetBtn.style.right = '70px';
-            retweetBtn.style.background = 'rgba(255,255,255,0.8)';
-            retweetBtn.style.border = 'none';
-            retweetBtn.style.borderRadius = '12px';
-            retweetBtn.style.padding = '5px 10px';
-            retweetBtn.style.cursor = 'pointer';
-            retweetBtn.dataset.count = 0;
-
-            retweetBtn.addEventListener('click', () => {
-                let cnt = parseInt(retweetBtn.dataset.count, 10);
-                cnt += 1;
-                retweetBtn.dataset.count = cnt;
-                retweetBtn.textContent = `🔁 ${cnt}`;
-            });
-
-            box.appendChild(retweetBtn);
-            box.appendChild(likeBtn);
-            return box;
+                responseModal.classList.add('active');
+            } else {
+                // Roll for artifact
+                const rarityRoll = rollForArtifact();
+                
+                if (rarityRoll) {
+                    const rarity = rarityRoll;
+                    const artifactPool = artifactLibrary[rarity];
+                    const artifact = artifactPool[Math.floor(Math.random() * artifactPool.length)];
+                    
+                    // Add to collection
+                    if (!artifacts[artifact.name]) {
+                        artifacts[artifact.name] = { emoji: artifact.emoji, count: 0, rarity: rarity };
+                    }
+                    artifacts[artifact.name].count++;
+                    saveArtifacts();
+                    
+                    // Show artifact notification in card
+                    const backElement = postElement.querySelector('.post-card-back > div');
+                    const artifactNotif = document.createElement('div');
+                    artifactNotif.className = 'artifact-notification';
+                    artifactNotif.innerHTML = artifact.emoji;
+                    backElement.after(artifactNotif);
+                    
+                    // Add rarity text
+                    const rarityText = document.createElement('div');
+                    rarityText.className = 'artifact-rarity-text';
+                    rarityText.textContent = rarity;
+                    artifactNotif.after(rarityText);
+                }
+                
+                updateCollectionDisplay();
+            }
         }
 
-        // 3. Load a specific number of boxes into the feed
-        function loadBoxes(batchSize = 5) {
-            // Using a DocumentFragment improves performance by limiting DOM repaints
+        // Collection persistence
+        function saveArtifacts() {
+            localStorage.setItem('quittrArtifacts', JSON.stringify(artifacts));
+            localStorage.setItem('quittrKittenCount', kittenCount.toString());
+        }
+
+        function loadArtifacts() {
+            const saved = localStorage.getItem('quittrArtifacts');
+            if (saved) {
+                artifacts = JSON.parse(saved);
+            }
+            const savedKittenCount = localStorage.getItem('quittrKittenCount');
+            if (savedKittenCount) {
+                kittenCount = parseInt(savedKittenCount);
+            }
+            updateCollectionDisplay();
+        }
+
+        function updateCollectionDisplay() {
+            artifactsList.innerHTML = '';
+            const sortedArtifacts = Object.entries(artifacts)
+                .sort((a, b) => {
+                    const rarityOrder = { common: 0, uncommon: 1, rare: 2, epic: 3, kitten: 4 };
+                    return rarityOrder[b[1].rarity] - rarityOrder[a[1].rarity];
+                });
+
+            if (sortedArtifacts.length === 0) {
+                artifactsList.innerHTML = '<div style="grid-column: 1 / -1; font-size: 0.9rem; color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">Click posts to collect</div>';
+                if (document.body.classList.contains('light')) {
+                    artifactsList.lastChild.style.color = 'rgba(0,0,0,0.4)';
+                }
+            } else {
+                sortedArtifacts.forEach(([name, data]) => {
+                    const item = document.createElement('div');
+                    item.className = 'artifact-item';
+                    item.innerHTML = `
+                        <div class="artifact-emoji">${data.emoji}</div>
+                        <div class="artifact-name">${name}</div>
+                        <div class="artifact-count">×${data.count}</div>
+                        <div class="artifact-rarity-badge">${data.rarity}</div>
+                    `;
+                    artifactsList.appendChild(item);
+                });
+            }
+
+            // Update kitten counter
+            document.getElementById('kittenCounter').textContent = kittenCount;
+        }
+
+        // Load posts
+        function loadPosts(batchSize = 5) {
             const fragment = document.createDocumentFragment();
             for (let i = 0; i < batchSize; i++) {
-                fragment.appendChild(createBox());
+                fragment.appendChild(createPost());
             }
             feedContainer.appendChild(fragment);
         }
 
-        // 4. Initial load so the screen isn't empty
-        loadBoxes(10);
+        // Initial load
+        loadPosts(8);
 
-        // 5. Set up the Intersection Observer
+        // Infinite scroll
         const observer = new IntersectionObserver((entries) => {
-            // If the sentinel is intersecting (visible on screen), load more!
             if (entries[0].isIntersecting) {
-                // Adding a tiny delay mimics network loading and feels more natural
                 setTimeout(() => {
-                    loadBoxes(10);
+                    loadPosts(5);
                 }, 150);
             }
         }, {
-            // Start loading 200px BEFORE the user actually hits the bottom
-            rootMargin: '200px' 
+            rootMargin: '200px'
         });
 
-        // Tell the observer to watch the sentinel
         observer.observe(sentinel);
 
-        // overlay logic
-        const overlay = document.getElementById('replyOverlay');
-        const repliesContainer = document.getElementById('repliesContainer');
-        const overlayClose = document.getElementById('overlayClose');
-
-        // support button behavior
+        // Support button
         const supportBtn = document.getElementById('supportBtn');
         supportBtn.addEventListener('click', () => {
-            // open a placeholder support link in a new tab
             window.open('https://www.paypal.com/paypalme/mirteaa', '_blank');
-        });
-
-        function showReplies() {
-            // clear existing content
-            repliesContainer.innerHTML = '';
-            // random number of replies between 1 and 10
-            const count = Math.floor(Math.random() * 10) + 1;
-            for (let i = 0; i < count; i++) {
-                const r = document.createElement('div');
-                r.className = 'reply-box';
-                const color = getRandomColor();
-                r.style.setProperty('--bg', color);
-                r.querySelector?.('::after');
-                // set background via pseudo-element style hack
-                r.style.backgroundColor = color;
-                repliesContainer.appendChild(r);
-            }
-            overlay.style.display = 'flex';
-        }
-
-        overlayClose.addEventListener('click', () => {
-            overlay.style.display = 'none';
-        });
-
-        // hide when clicking outside replies area
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                overlay.style.display = 'none';
-            }
         });
     </script>
 </body>
